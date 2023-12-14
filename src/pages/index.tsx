@@ -15,21 +15,25 @@ export default function Home() {
     handleSubmit,
     register,
     formState: { errors, isSubmitting },
+    reset,
   } = useForm({
     defaultValues: {
-      name: "",
+      firstName: "",
       lastName: "",
+      website: "",
     },
   });
 
-  function onSubmit(values: { name: string; lastName: string }) {
+  function onSubmit(values: { firstName: string; lastName: string }) {
     return new Promise((resolve) => {
       setTimeout(() => {
         alert(JSON.stringify(values, null, 2));
+        reset();
         resolve(null);
-      }, 3000);
+      }, 2000);
     });
   }
+
   return (
     <>
       <Head>
@@ -40,39 +44,36 @@ export default function Home() {
       </Head>
       <Flex w="full" justifyContent="center">
         <VStack
-          bg="gray.600"
           as="form"
+          bg="gray.600"
           onSubmit={handleSubmit(onSubmit)}
           mt="20vh"
           p="1.5rem"
           borderRadius="12px"
+          w="500px"
         >
-          <FormControl isInvalid={!!errors.name}>
-            <FormLabel htmlFor="name">First name</FormLabel>
+          <FormControl isInvalid={!!errors.firstName}>
+            <FormLabel htmlFor="firstName">First name</FormLabel>
             <Input
-              id="name"
-              placeholder="name"
-              {...register("name", {
+              id="firstName"
+              placeholder="John"
+              {...register("firstName", {
                 required: "This is required",
-                minLength: {
-                  value: 4,
-                  message: "Minimum length should be 4",
-                },
                 maxLength: {
-                  value: 8,
+                  value: 30,
                   message: "Minimum length should be 4",
                 },
               })}
             />
             <FormErrorMessage>
-              {errors.name && errors.name.message}
+              {errors.firstName && errors.firstName.message}
             </FormErrorMessage>
           </FormControl>
           <FormControl isInvalid={!!errors.lastName}>
             <FormLabel htmlFor="lastName">Last Name</FormLabel>
             <Input
               id="lastName"
-              placeholder="lastName"
+              placeholder="Doe"
               {...register("lastName", {
                 required: "This is required",
                 minLength: {
@@ -80,13 +81,32 @@ export default function Home() {
                   message: "Minimum length should be 4",
                 },
                 maxLength: {
-                  value: 8,
+                  value: 30,
                   message: "Minimum length should be 4",
                 },
               })}
             />
             <FormErrorMessage>
               {errors.lastName && errors.lastName.message}
+            </FormErrorMessage>
+          </FormControl>
+          <FormControl isInvalid={!!errors.website}>
+            <FormLabel htmlFor="website">Website</FormLabel>
+            <Input
+              id="website"
+              placeholder="https://www.google.ca/"
+              {...register("website", {
+                required: "This is required",
+                pattern: {
+                  value:
+                    /^(https?|ftp):\/\/(([a-z\d]([a-z\d-]*[a-z\d])?\.)+[a-z]{2,}|localhost)(\/[-a-z\d%_.~+]*)*(\?[;&a-z\d%_.~+=-]*)?(\#[-a-z\d_]*)?$/i,
+                  message:
+                    "Invalid url. Make sure the url starts with https://",
+                },
+              })}
+            />
+            <FormErrorMessage>
+              {errors.website && errors.website.message}
             </FormErrorMessage>
           </FormControl>
           <Button
